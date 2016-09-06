@@ -115,7 +115,6 @@ class DB
 		$sql .= "id integer NOT NULL";
 		$sql .= ", parent_id integer DEFAULT 0";
 		$sql .= ", username varchar(255)";
-		$sql .= ", delete_key varchar(8)";
 		$sql .= ", title varchar(64)";
 		$sql .= ", comment varchar(1000)";
 		$sql .= ", create_at datetime";

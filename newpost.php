@@ -55,61 +55,63 @@ $res = BBS::newThread();
 				</div>
 			<?php endif; ?>
 
-			<div class="row">
-				<div class="col-sm-12">
+			<?php if (isset($res['success']) && $res['success']) : ?>
 
-					<form action="" method="post">
-						<div class="form-group<?php if (isset($res['errors']['title'])) : ?> has-error<?php endif; ?>">
-							<label class="control-label" for="title">
-								タイトル
-							</label>
-							<input type="text" name="title" class="form-control" id="title" value="<?= h(filter_input(INPUT_POST, 'title')); ?>">
-							<?php if (isset($res['errors']['title'])) : ?>
-								<span class="help-block"><?= h($res['errors']['title']); ?></span>
-							<?php endif; ?>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="alert alert-success">
+							<h4><i class="icon fa fa-check"></i> Success!</h4>
+							<p>正常に登録しました。</p>
+							<p><a href="index.php">掲示板トップへ</a></p>
 						</div>
-						<div class="form-group<?php if (isset($res['errors']['username'])) : ?> has-error<?php endif; ?>">
-							<label class="control-label" for="username">
-								お名前
-							</label>
-							<input type="text" name="username" class="form-control" id="username" value="<?= h(filter_input(INPUT_POST, 'username')); ?>">
-							<?php if (isset($res['errors']['username'])) : ?>
-								<span class="help-block"><?= h($res['errors']['username']); ?></span>
-							<?php endif; ?>
-						</div>
-						<div class="form-group<?php if (isset($res['errors']['comment'])) : ?> has-error<?php endif; ?>">
-							<label class="control-label" for="comment">
-								内容
-							</label>
-							<textarea name="comment" class="form-control" id="comment" rows="6"><?= h(filter_input(INPUT_POST, 'comment')); ?></textarea>
-							<?php if (isset($res['errors']['comment'])) : ?>
-								<span class="help-block"><?= h($res['errors']['comment']); ?></span>
-							<?php endif; ?>
-						</div>
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<button class="btn btn-primary">投稿</button>
-									<a href="index.php" class="btn btn-default">掲示板トップへ</a>
-									<input type="hidden" name="crsf_token" value="<?= h(CSRF::get()); ?>" />
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group<?php if (isset($res['errors']['delkey'])) : ?> has-error<?php endif; ?>">
-									<div class="input-group">
-										<span class="input-group-addon">削除キー</span>
-										<input type="text" name="delkey" class="form-control" id="delkey" value="<?= h(filter_input(INPUT_POST, 'delkey')); ?>">
-									</div>
-									<?php if (isset($res['errors']['delkey'])) : ?>
-										<span class="help-block"><?= h($res['errors']['delkey']); ?></span>
-									<?php endif; ?>
-								</div>
-							</div>
-						</div>
-					</form>
-
+					</div>
 				</div>
-			</div>
+
+			<?php else: ?>
+				<div class="row">
+					<div class="col-sm-12">
+
+						<form action="" method="post">
+							<div class="form-group<?php if (isset($res['errors']['title'])) : ?> has-error<?php endif; ?>">
+								<label class="control-label" for="title">
+									タイトル
+								</label>
+								<input type="text" name="title" class="form-control" id="title" value="<?= h(filter_input(INPUT_POST, 'title')); ?>">
+								<?php if (isset($res['errors']['title'])) : ?>
+									<span class="help-block"><?= h($res['errors']['title']); ?></span>
+								<?php endif; ?>
+							</div>
+							<div class="form-group<?php if (isset($res['errors']['username'])) : ?> has-error<?php endif; ?>">
+								<label class="control-label" for="username">
+									お名前
+								</label>
+								<input type="text" name="username" class="form-control" id="username" value="<?= h(filter_input(INPUT_POST, 'username')); ?>">
+								<?php if (isset($res['errors']['username'])) : ?>
+									<span class="help-block"><?= h($res['errors']['username']); ?></span>
+								<?php endif; ?>
+							</div>
+							<div class="form-group<?php if (isset($res['errors']['comment'])) : ?> has-error<?php endif; ?>">
+								<label class="control-label" for="comment">
+									内容
+								</label>
+								<textarea name="comment" class="form-control" id="comment" rows="6"><?= h(filter_input(INPUT_POST, 'comment')); ?></textarea>
+								<?php if (isset($res['errors']['comment'])) : ?>
+									<span class="help-block"><?= h($res['errors']['comment']); ?></span>
+								<?php endif; ?>
+							</div>
+
+							<div class="form-group">
+								<button class="btn btn-primary">投稿</button>
+								<a href="index.php" class="btn btn-default">掲示板トップへ</a>
+								<input type="hidden" name="crsf_token" value="<?= h(CSRF::get()); ?>" />
+							</div>
+
+						</form>
+
+					</div>
+				</div>
+
+			<?php endif; ?>
 		</div>
 		<script type="text/javascript" src="//code.jquery.com/jquery-3.0.0.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

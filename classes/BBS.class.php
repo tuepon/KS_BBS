@@ -26,7 +26,6 @@ class BBS
 		$sql .= "m.id";
 		$sql .= ", m.parent_id";
 		$sql .= ", m.username";
-		$sql .= ", m.delete_key";
 		$sql .= ", m.title";
 		$sql .= ", m.comment";
 		$sql .= ", m.create_at";
@@ -90,7 +89,10 @@ class BBS
 			return ['errors' => $validate];
 		}
 
-		return self::insert(0);
+		$res = self::insert(0);
+		if ($res) {
+			return ['success' => true];
+		}
 	}
 
 	/**
@@ -112,7 +114,10 @@ class BBS
 		}
 
 		$parent_id = filter_input(INPUT_GET, 'id');
-		return self::insert($parent_id);
+		$res = self::insert($parent_id);
+		if ($res) {
+			return ['success' => true];
+		}
 	}
 
 	/**
@@ -121,7 +126,6 @@ class BBS
 	private static function validate($function)
 	{
 		$username = filter_input(INPUT_POST, 'username');
-		$delete_key = filter_input(INPUT_POST, 'delkey');
 		$title = filter_input(INPUT_POST, 'title');
 		$comment = filter_input(INPUT_POST, 'comment');
 
@@ -131,9 +135,6 @@ class BBS
 		}
 
 		if ($function == 'newThread') {
-			if (!preg_match('/^[0-9]{4,8}$/', $delete_key)) {
-				$err['delkey'] = '削除キーは数字4桁以上8桁以下で設定してください。';
-			}
 			if (mb_strlen(trim($title)) > 64 || mb_strlen(trim($title)) == 0) {
 				$err['title'] = 'タイトルは入力必須（64文字以下）です。';
 			}
@@ -156,7 +157,6 @@ class BBS
 		$sql .= "id";
 		$sql .= ", parent_id";
 		$sql .= ", username";
-		$sql .= ", delete_key";
 		$sql .= ", title";
 		$sql .= ", comment";
 		$sql .= ", create_at";
@@ -166,7 +166,6 @@ class BBS
 		$sql .= "NULL";
 		$sql .= ", :parent_id";
 		$sql .= ", :username";
-		$sql .= ", :delete_key";
 		$sql .= ", :title";
 		$sql .= ", :comment";
 		$sql .= ", :create_at";
@@ -179,7 +178,6 @@ class BBS
 		$arr = [];
 		$arr[':parent_id'] = $parent_id;
 		$arr[':username'] = filter_input(INPUT_POST, 'username');
-		$arr[':delete_key'] = filter_input(INPUT_POST, 'delkey');
 		$arr[':title'] = filter_input(INPUT_POST, 'title');
 		$arr[':comment'] = filter_input(INPUT_POST, 'comment');
 		$arr[':create_at'] = $now;

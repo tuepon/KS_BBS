@@ -11,7 +11,8 @@ namespace KSBBS;
 require 'common.php';
 
 // スレッドを取得
-$rs = BBS::get(filter_input(INPUT_GET, 'order'));
+$res = BBS::get(filter_input(INPUT_GET, 'order'));
+$rs = $res['rows'];
 ?>
 <!DOCTYPE HTML>
 <html lang="ja">
@@ -105,12 +106,10 @@ $rs = BBS::get(filter_input(INPUT_GET, 'order'));
 						</div>
 
 						<div class="row pagination_nav">
-							<div class="col-xs-6">
-								<a href="" class="btn btn-primary">前のページ</a>
+							<div class="col-xs-12">
+								<?php echo pagination(filter_input(INPUT_GET, 'page'), $res['count']); ?>
 							</div>
-							<div class="col-xs-6 text-right">
-								<a href="" class="btn btn-primary">次のページ</a>
-							</div>
+
 						</div>
 
 					<?php endif; ?>

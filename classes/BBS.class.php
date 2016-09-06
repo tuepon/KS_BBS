@@ -58,18 +58,18 @@ class BBS
 			$sql .= "ORDER BY display_order DESC";
 		}
 
-		$rs = DB::select($sql, $arr, 10);
+		$res = DB::select($sql, $arr, 5);
 
-		foreach ($rs as $i => $r) {
+		foreach ($res['rows'] as $i => $r) {
 			$parent_id = $r['id'];
 			$sql_child = "SELECT * FROM ksbbs ";
 			$sql_child .= "WHERE parent_id = ? ";
 			$sql_child .= "ORDER BY update_at ASC";
 			$rs_child = DB::select($sql_child, [$parent_id], -1);
-			$rs[$i]['reply'] = $rs_child;
+			$rs['rows'][$i]['reply'] = $rs_child;
 		}
 
-		return $rs;
+		return $res;
 	}
 
 	/**

@@ -45,10 +45,18 @@ class DB
 	public static function select($sql, array $arr = [], $limit = -1)
 	{
 		$dbh = self::getInstance();
-		$sql = $sql . sprintf(' LIMIT %d, %d', 0, $limit);
+
+		$stmtCnt = $dbh->prepare($sql);
+		$stmtCnt->execute($arr);
+		$cnt = count($stmtCnt->fetchAll());
+
+		$page = filter_input(INPUT_GET, 'page');
+		$start = ($page == 0) ? 1 : ($page - 1) * 5;
+
+		$sql = $sql . sprintf(' LIMIT %d, %d', $start, $limit);
 		$stmt = $dbh->prepare($sql);
 		$stmt->execute($arr);
-		return $stmt->fetchAll();
+		return ['count' => $cnt, 'rows' => $stmt->fetchAll()];
 	}
 
 	/**

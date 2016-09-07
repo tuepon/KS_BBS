@@ -66,7 +66,7 @@ class BBS
 			$sql_child .= "WHERE parent_id = ? ";
 			$sql_child .= "ORDER BY update_at ASC";
 			$rs_child = DB::select($sql_child, [$parent_id], -1);
-			$rs['rows'][$i]['reply'] = $rs_child;
+			$res['rows'][$i]['reply'] = $rs_child;
 		}
 
 		return $res;

@@ -11,6 +11,26 @@ namespace KSBBS;
 class BBS
 {
 
+	public static function all()
+	{
+		$arr = [];
+
+		$sql = "SELECT ";
+		$sql .= "m.id";
+		$sql .= ", m.parent_id";
+		$sql .= ", m.username";
+		$sql .= ", m.title";
+		$sql .= ", m.comment";
+		$sql .= ", m.create_at";
+		$sql .= ", m.update_at";
+		$sql .= ", m.delete_flag";
+		$sql .= " FROM ksbbs m ";
+
+		$res = DB::select($sql, []);
+
+		return $res;
+	}
+
 	/**
 	 * get sreads
 	 */
@@ -63,9 +83,9 @@ class BBS
 		foreach ($res['rows'] as $i => $r) {
 			$parent_id = $r['id'];
 			$sql_child = "SELECT * FROM ksbbs ";
-			$sql_child .= "WHERE parent_id = ? ";
+			$sql_child .= "WHERE parent_id = :parent_id ";
 			$sql_child .= "ORDER BY update_at ASC";
-			$rs_child = DB::select($sql_child, [$parent_id], -1);
+			$rs_child = DB::select($sql_child, [':parent_id' => $parent_id], -1);
 			$res['rows'][$i]['reply'] = $rs_child;
 		}
 

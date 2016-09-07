@@ -13,7 +13,9 @@ require 'common.php';
 // スレッドを取得
 $res = BBS::get(filter_input(INPUT_GET, 'order'));
 $rs = $res['rows'];
-var_dump($rs);
+//var_dump($rs);
+//$all = BBS::all();
+//var_dump($all['rows']);
 ?>
 <!DOCTYPE HTML>
 <html lang="ja">
@@ -82,7 +84,7 @@ var_dump($rs);
 
 									<?php if (isset($r['reply']['count']) && $r['reply']['count'] > 0) : ?>
 
-										<?php foreach ($r['reply'] as $i => $reply) : ?>
+										<?php foreach ($r['reply']['rows'] as $i => $reply) : ?>
 
 											<div class="reply">
 												<h3>#<?= ($i + 1); ?> Re: <?= h($r['title']) ?></h3>

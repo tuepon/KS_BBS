@@ -48,15 +48,18 @@ class DB
 
 		$stmtCnt = $dbh->prepare($sql);
 		$stmtCnt->execute($arr);
-		$cnt = count($stmtCnt->fetchAll());
+		$rows = $stmtCnt->fetchAll();
+		$cnt = count($rows);
 
-		$page = filter_input(INPUT_GET, 'page');
-		$start = ($page == 0) ? 1 : ($page - 1) * 5;
+		if (0 < $limit) {
+			$page = filter_input(INPUT_GET, 'page');
+			$start = ($page == 0) ? 1 : ($page - 1) * 5;
+			$sql = $sql . sprintf(' LIMIT %d, %d', $start, $limit);
+		}
 
-		$sql = $sql . sprintf(' LIMIT %d, %d', $start, $limit);
 		$stmt = $dbh->prepare($sql);
 		$stmt->execute($arr);
-		return ['count' => $cnt, 'rows' => $stmt->fetchAll()];
+		return ['count' => $cnt, 'rows' => $rows];
 	}
 
 	/**

@@ -13,6 +13,7 @@ require 'common.php';
 // スレッドを取得
 $res = BBS::get(filter_input(INPUT_GET, 'order'));
 $rs = $res['rows'];
+var_dump($rs);
 ?>
 <!DOCTYPE HTML>
 <html lang="ja">
@@ -79,7 +80,7 @@ $rs = $res['rows'];
 										<span>返信数: <?= h($r['comment_count']) ?></span>
 									</div>
 
-									<?php if (isset($r['reply']) && count($r['reply']) > 0) : ?>
+									<?php if (isset($r['reply']['count']) && $r['reply']['count'] > 0) : ?>
 
 										<?php foreach ($r['reply'] as $i => $reply) : ?>
 

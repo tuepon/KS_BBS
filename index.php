@@ -73,6 +73,14 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 										<?= nl2br(h($r['comment'])) ?>
 									</div>
 
+									<div class="images row">
+										<?php foreach (BBS::getImages($r['id']) as $img) : ?>
+											<div class="col-xs-4">
+												<img src="<?= h($img['filename']); ?>" width="100%" />
+											</div>
+										<?php endforeach; ?>
+									</div>
+
 									<div class="comment-footer">
 										<a href="reply.php?id=<?= h($r['id']) ?>">[ <?= BBS_REPLYING; ?> ]</a>
 										<span><?= BBS_REPLY_COUNT; ?>: <?= h($r['comment_count']) ?></span>
@@ -91,6 +99,14 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 
 												<div class="comment">
 													<?= nl2br(h($reply['comment'])) ?>
+												</div>
+
+												<div class="images row">
+													<?php foreach (BBS::getImages($reply['id']) as $img) : ?>
+														<div class="col-xs-4">
+															<img src="<?= h($img['filename']); ?>" width="100%" />
+														</div>
+													<?php endforeach; ?>
 												</div>
 											</div>
 

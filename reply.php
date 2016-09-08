@@ -73,7 +73,7 @@ $res = BBS::reply();
 
 					<div class="col-sm-12 blog-main">
 
-						<form action="" method="post">
+						<form action="" method="post" enctype="multipart/form-data">
 
 							<div class="form-group<?php if (isset($res['errors']['username'])) : ?> has-error<?php endif; ?>">
 								<label class="control-label" for="username">
@@ -95,12 +95,54 @@ $res = BBS::reply();
 								<?php endif; ?>
 							</div>
 
+							<?php if (BBS_FUNC_IMAGE) : ?>
+
+								<div class="form-group">
+									<label class="control-label" for="images">
+										<?= BBS_POST_IMAGE; ?>
+									</label>
+
+									<div class="row">
+										<div class="col-sm-6"><input type="file" name="images[]" id="images"></div>
+										<?php if (isset($res['errors']['images'][0])) : ?>
+											<div class="col-sm-6 has-error"><span class="help-block"><?= h($res['errors']['images'][0]); ?></span></div>
+										<?php endif; ?>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-6"><input type="file" name="images[]"></div>
+										<?php if (isset($res['errors']['images'][1])) : ?>
+											<div class="col-sm-6 has-error"><span class="help-block"><?= h($res['errors']['images'][1]); ?></span></div>
+										<?php endif; ?>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-6"><input type="file" name="images[]"></div>
+										<?php if (isset($res['errors']['images'][2])) : ?>
+											<div class="col-sm-6 has-error"><span class="help-block"><?= h($res['errors']['images'][2]); ?></span></div>
+										<?php endif; ?>
+									</div>
+								</div>
+
+							<?php endif; ?>
+
 							<div class="row">
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<div class="form-group">
 										<button class="btn btn-primary"><?= BBS_POST; ?></button>
-										<input type="hidden" name="crsf_token" value="<?= h(CSRF::get()); ?>" />
 										<a href="index.php" class="btn btn-default"><?= BBS_TO_TOP; ?></a>
+										<input type="hidden" name="crsf_token" value="<?= h(CSRF::get()); ?>" />
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group<?php if (isset($res['errors']['delete_key'])) : ?> has-error<?php endif; ?>">
+										<div class="input-group">
+											<span class="input-group-addon"><?= BBS_POST_DELKEY; ?></span>
+											<input type="text" name="delete_key" class="form-control" id="delete_key" value="<?= h(filter_input(INPUT_POST, 'delete_key')); ?>">
+										</div>
+										<?php if (isset($res['errors']['delete_key'])) : ?>
+											<span class="help-block"><?= h($res['errors']['delete_key']); ?></span>
+										<?php endif; ?>
 									</div>
 								</div>
 							</div>

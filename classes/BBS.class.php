@@ -93,6 +93,16 @@ class BBS
 		return $res;
 	}
 
+	public static function getImages($postId)
+	{
+		$sql_img = "SELECT * FROM ksimg ";
+		$sql_img .= "WHERE post_id = :post_id ";
+		$sql_img .= "ORDER BY id ASC";
+		$imgs = DB::select($sql_img, [':post_id' => $postId], -1);
+
+		return $imgs['rows'];
+	}
+
 	/**
 	 * regist new Thread
 	 */
@@ -146,6 +156,9 @@ class BBS
 		DB::transaction();
 
 		$insertId = self::insert($parent_id);
+
+		var_dump('$insertId:' . $insertId);
+
 		if ($insertId &&
 			(!BBS_FUNC_IMAGE || self::setImages($insertId, self::images()))) {
 			DB::commit();
@@ -213,22 +226,25 @@ class BBS
 	{
 		$images = (isset($_FILES['images'])) ? $_FILES['images'] : null;
 
+		$arrImages = [];
 		if (isset($images['error'])) {
-			$arrImages = [];
 			foreach ($images['tmp_name'] as $tmp_name) {
-				$arrSize = getimagesize($tmp_name);
-				switch ($arrSize[2]) {
-					case IMAGETYPE_PNG:
-						$extension = 'png';
-						break;
-					case IMAGETYPE_JPEG:
-					case IMAGETYPE_JPEG2000:
-						$extension = 'jpg';
-						break;
-				}
-				$new_filename = sprintf('images/%s.%s', sha1_file($tmp_name), $extension);
-				if (rename($tmp_name, $new_filename)) {
-					$arrImages[] = $new_filename;
+				if (!empty($tmp_name) && file_exists($tmp_name)) {
+
+					$arrSize = getimagesize($tmp_name);
+					switch ($arrSize[2]) {
+						case IMAGETYPE_PNG:
+							$extension = 'png';
+							break;
+						case IMAGETYPE_JPEG:
+						case IMAGETYPE_JPEG2000:
+							$extension = 'jpg';
+							break;
+					}
+					$new_filename = sprintf('images/%s.%s', sha1_file($tmp_name), $extension);
+					if (rename($tmp_name, $new_filename)) {
+						$arrImages[] = $new_filename;
+					}
 				}
 			}
 		}

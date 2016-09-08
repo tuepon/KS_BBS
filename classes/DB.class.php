@@ -119,23 +119,42 @@ class DB
 		$dbh->rollBack();
 	}
 
+	/**
+	 * テーブルを作成する
+	 */
 	public static function createTable()
 	{
-		$sql = "CREATE TABLE IF NOT EXISTS ksbbs ";
-		$sql .= "(";
-		$sql .= "id integer NOT NULL";
-		$sql .= ", parent_id integer DEFAULT 0";
-		$sql .= ", username varchar(255)";
-		$sql .= ", title varchar(64)";
-		$sql .= ", comment varchar(1000)";
-		$sql .= ", create_at datetime";
-		$sql .= ", update_at datetime";
-		$sql .= ", delete_flag integer DEFAULT 1 ";
-		$sql .= ", CONSTRAINT account_pky PRIMARY KEY (id)";
-		$sql .= ")";
+		$sqlbbs = "CREATE TABLE IF NOT EXISTS ksbbs ";
+		$sqlbbs .= "(";
+		$sqlbbs .= "id integer NOT NULL";
+		$sqlbbs .= ", parent_id integer DEFAULT 0";
+		$sqlbbs .= ", delete_key varchar(8)";
+		$sqlbbs .= ", username varchar(255)";
+		$sqlbbs .= ", title varchar(64)";
+		$sqlbbs .= ", comment varchar(1000)";
+		$sqlbbs .= ", create_at datetime";
+		$sqlbbs .= ", update_at datetime";
+		$sqlbbs .= ", delete_flag integer DEFAULT 1 ";
+		$sqlbbs .= ", CONSTRAINT account_pky PRIMARY KEY (id)";
+		$sqlbbs .= ")";
+
+		$sqlimg = "CREATE TABLE IF NOT EXISTS ksimg ";
+		$sqlimg .= "(";
+		$sqlimg .= "id integer NOT NULL";
+		$sqlimg .= ", post_id integer DEFAULT 0";
+		$sqlimg .= ", filename varchar(255)";
+		$sqlimg .= ", create_at datetime";
+		$sqlimg .= ", update_at datetime";
+		$sqlimg .= ", delete_flag integer DEFAULT 1 ";
+		$sqlimg .= ", CONSTRAINT account_pky PRIMARY KEY (id)";
+		$sqlimg .= ")";
+
 		$dbh = self::getInstance();
-		$stmt = $dbh->prepare($sql);
-		$stmt->execute([]);
+
+		foreach ([$sqlbbs, $sqlimg] as $sql) {
+			$stmt = $dbh->prepare($sql);
+			$stmt->execute();
+		}
 	}
 
 }

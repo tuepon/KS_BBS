@@ -12,18 +12,14 @@ require 'common.php';
 
 // スレッドを取得
 $res = BBS::get(filter_input(INPUT_GET, 'order'));
-$rs = $res['rows'];
-//var_dump($rs);
-//$all = BBS::all();
-//var_dump($all['rows']);
 ?>
 <!DOCTYPE HTML>
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8">
-		<title>掲示板サンプル</title>
+		<title><?= BBS_TITLE; ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/common.min.css" />
 
 		<!--[if lt IE 9]>
@@ -45,25 +41,25 @@ $rs = $res['rows'];
 		<div class="container">
 
 			<div class="blog-header">
-				<h1 class="blog-title">掲示板サンプル</h1>
-				<p class="lead blog-description">ここに掲示板の説明を記述します。</p>
+				<h1 class="blog-title"><?= BBS_TITLE; ?></h1>
+				<p class="lead blog-description"><?= BBS_DESCRIPTION; ?></p>
 			</div>
 
 			<div class="order">
 				<span>ソート</span>
-				<a href="?order=new">新しいもの順</a>
-				<a href="?order=comment">返信の多い順</a>
+				<a href="?order=new"><?= BBS_ORDER_NEW; ?></a>
+				<a href="?order=comment"><?= BBS_ORDER_COMMENT; ?></a>
 			</div>
 
 			<div class="row">
 
 				<div class="col-sm-8 blog-main">
 
-					<?php if (isset($rs) && count($rs) > 0) : ?>
+					<?php if (isset($res['rows']) && count($res['rows']) > 0) : ?>
 
 						<div class="threads">
 
-							<?php foreach ($rs as $r) : ?>
+							<?php foreach ($res['rows'] as $r) : ?>
 
 								<div class="thread" data-id="<?= h($r['id']) ?>">
 
@@ -78,8 +74,8 @@ $rs = $res['rows'];
 									</div>
 
 									<div class="comment-footer">
-										<a href="reply.php?id=<?= h($r['id']) ?>">[ 返信する ]</a>
-										<span>返信数: <?= h($r['comment_count']) ?></span>
+										<a href="reply.php?id=<?= h($r['id']) ?>">[ <?= BBS_REPLYING; ?> ]</a>
+										<span><?= BBS_REPLY_COUNT; ?>: <?= h($r['comment_count']) ?></span>
 									</div>
 
 									<?php if (isset($r['reply']['count']) && $r['reply']['count'] > 0) : ?>
@@ -125,16 +121,19 @@ $rs = $res['rows'];
 
 							<div class="new-post">
 								<a href="newpost.php" class="btn btn-primary btn-lg btn-block">
-									新規スレッド投稿
+									<?= BBS_NEW_THREAD; ?>
 								</a>
 							</div>
 
 							<div class="search">
 								<form action="" method="get">
 									<div class="input-group">
-										<span class="input-group-addon">検索</span>
+										<span class="input-group-addon"><?= BBS_SEARCH; ?></span>
 										<input class="form-control" type="search" name="q" value="<?= h(filter_input(INPUT_GET, 'q')); ?>" />
 									</div>
+									<p class="text-right">
+										<a href="/"><?= BBS_CLEAR; ?></a>
+									</p>
 								</form>
 							</div>
 
@@ -151,7 +150,7 @@ $rs = $res['rows'];
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="//code.jquery.com/jquery-3.0.0.min.js"></script>
-		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	</body>
 </html>

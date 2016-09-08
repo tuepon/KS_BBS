@@ -11,10 +11,12 @@ namespace KSBBS;
 class BBS
 {
 
+	private static $arrImageType = [
+		IMAGETYPE_JPEG, IMAGETYPE_JPEG2000, IMAGETYPE_PNG
+	];
+
 	public static function all()
 	{
-		$arr = [];
-
 		$sql = "SELECT ";
 		$sql .= "m.id";
 		$sql .= ", m.parent_id";
@@ -25,9 +27,7 @@ class BBS
 		$sql .= ", m.update_at";
 		$sql .= ", m.delete_flag";
 		$sql .= " FROM ksbbs m ";
-
 		$res = DB::select($sql, []);
-
 		return $res;
 	}
 
@@ -50,6 +50,7 @@ class BBS
 		$sql .= ", m.comment";
 		$sql .= ", m.create_at";
 		$sql .= ", m.update_at";
+		$sql .= ", m.delete_key";
 		$sql .= ", m.delete_flag";
 		$sql .= ", ifnull(max(m.update_at, s.update_at), m.update_at) as display_order";
 		$sql .= ", count(s.id) as comment_count";
@@ -109,10 +110,17 @@ class BBS
 			return ['errors' => $validate];
 		}
 
-		$res = self::insert(0);
-		if ($res) {
+		DB::transaction();
+
+		$insertId = self::insert(0);
+		if ($insertId &&
+			(!BBS_FUNC_IMAGE || self::setImages($insertId, self::images()))) {
+			DB::commit();
 			return ['success' => true];
 		}
+
+		DB::rollback();
+		return false;
 	}
 
 	/**
@@ -134,10 +142,18 @@ class BBS
 		}
 
 		$parent_id = filter_input(INPUT_GET, 'id');
-		$res = self::insert($parent_id);
-		if ($res) {
+
+		DB::transaction();
+
+		$insertId = self::insert($parent_id);
+		if ($insertId &&
+			(!BBS_FUNC_IMAGE || self::setImages($insertId, self::images()))) {
+			DB::commit();
 			return ['success' => true];
 		}
+
+		DB::rollback();
+		return false;
 	}
 
 	/**
@@ -145,13 +161,19 @@ class BBS
 	 */
 	private static function validate($function)
 	{
+		$delete_key = filter_input(INPUT_POST, 'delete_key');
 		$username = filter_input(INPUT_POST, 'username');
 		$title = filter_input(INPUT_POST, 'title');
 		$comment = filter_input(INPUT_POST, 'comment');
+		$images = (isset($_FILES['images'])) ? $_FILES['images'] : [];
 
 		$err = [];
 		if (mb_strlen(trim($username)) == 0) {
 			$err['username'] = 'お名前は入力必須です。';
+		}
+
+		if (mb_strlen(trim($delete_key)) > 8 || mb_strlen(trim($delete_key)) < 4) {
+			$err['delete_key'] = '削除キーは入力必須（4〜8文字）です。';
 		}
 
 		if ($function == 'newThread') {
@@ -161,7 +183,23 @@ class BBS
 		}
 
 		if (mb_strlen(trim($comment)) > 1000 || mb_strlen(trim($comment)) == 0) {
-			$err['comment'] = ' 内容は入力必須（1,000文字以下）です。';
+			$err['comment'] = '内容は入力必須（1,000文字以下）です。';
+		}
+
+		if (isset($images['error'])) {
+			foreach ($images['error'] as $i => $errors) {
+				if ($errors == UPLOAD_ERR_OK) {
+					$tmp_name = $images['tmp_name'][$i];
+					$arrSize = getimagesize($tmp_name);
+					if (!in_array($arrSize[2], self::$arrImageType)) {
+						$err['images'][$i] = '選択したファイル形式は受け付けられません。';
+					}
+				} else if ($errors == UPLOAD_ERR_NO_FILE) {
+
+				} else {
+					$err['images'][$i] = '選択したファイルは受け付けられません。';
+				}
+			}
 		}
 
 		if (0 < count($err)) {
@@ -171,11 +209,38 @@ class BBS
 		return true;
 	}
 
+	private static function images()
+	{
+		$images = (isset($_FILES['images'])) ? $_FILES['images'] : null;
+
+		if (isset($images['error'])) {
+			$arrImages = [];
+			foreach ($images['tmp_name'] as $tmp_name) {
+				$arrSize = getimagesize($tmp_name);
+				switch ($arrSize[2]) {
+					case IMAGETYPE_PNG:
+						$extension = 'png';
+						break;
+					case IMAGETYPE_JPEG:
+					case IMAGETYPE_JPEG2000:
+						$extension = 'jpg';
+						break;
+				}
+				$new_filename = sprintf('images/%s.%s', sha1_file($tmp_name), $extension);
+				if (rename($tmp_name, $new_filename)) {
+					$arrImages[] = $new_filename;
+				}
+			}
+		}
+		return $arrImages;
+	}
+
 	private static function insert($parent_id)
 	{
 		$sql = "INSERT INTO ksbbs (";
 		$sql .= "id";
 		$sql .= ", parent_id";
+		$sql .= ", delete_key";
 		$sql .= ", username";
 		$sql .= ", title";
 		$sql .= ", comment";
@@ -185,6 +250,7 @@ class BBS
 		$sql .= ") VALUES (";
 		$sql .= "NULL";
 		$sql .= ", :parent_id";
+		$sql .= ", :delete_key";
 		$sql .= ", :username";
 		$sql .= ", :title";
 		$sql .= ", :comment";
@@ -197,6 +263,7 @@ class BBS
 
 		$arr = [];
 		$arr[':parent_id'] = $parent_id;
+		$arr[':delete_key'] = filter_input(INPUT_POST, 'delete_key');
 		$arr[':username'] = filter_input(INPUT_POST, 'username');
 		$arr[':title'] = filter_input(INPUT_POST, 'title');
 		$arr[':comment'] = filter_input(INPUT_POST, 'comment');
@@ -204,6 +271,43 @@ class BBS
 		$arr[':update_at'] = $now;
 
 		return DB::insert($sql, $arr);
+	}
+
+	private static function setImages($insertId, $images = [])
+	{
+		if (is_null($images)) {
+			return true;
+		}
+
+		$sql = 'INSERT INTO ksimg (';
+		$sql .= 'id';
+		$sql .= ', post_id';
+		$sql .= ', filename';
+		$sql .= ', create_at';
+		$sql .= ', update_at';
+		$sql .= ', delete_flag';
+		$sql .= ') VALUES (';
+		$sql .= 'NULL';
+		$sql .= ', :post_id';
+		$sql .= ', :filename';
+		$sql .= ', :create_at';
+		$sql .= ', :update_at';
+		$sql .= ', 0';
+		$sql .= ')';
+
+		$now = (new \DateTime())->format('Y-m-d H:i:s');
+
+		foreach ($images as $path) {
+			$arr = [];
+			$arr[':post_id'] = $insertId;
+			$arr[':filename'] = $path;
+			$arr[':create_at'] = $now;
+			$arr[':update_at'] = $now;
+			if (!DB::insert($sql, $arr)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

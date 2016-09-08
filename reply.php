@@ -16,9 +16,9 @@ $res = BBS::reply();
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8">
-		<title>返信投稿</title>
+		<title><?= BBS_REPLY; ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/common.min.css" />
 
 		<!--[if lt IE 9]>
@@ -40,7 +40,7 @@ $res = BBS::reply();
 		<div class="container">
 
 			<div class="blog-header">
-				<h1 class="blog-title">返信投稿</h1>
+				<h1 class="blog-title"><?= BBS_REPLY; ?></h1>
 			</div>
 
 			<?php if (isset($res['errors']['csrf_token']) && !$res['errors']['csrf_token']) : ?>
@@ -49,7 +49,7 @@ $res = BBS::reply();
 						<div class="alert alert-danger alert-dismissible">
 							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 							<h4><i class="icon fa fa-ban"></i> Alert!</h4>
-							二重投稿を検知したので、処理を中断しました。
+							<?= BBS_ERR_CSRF; ?>
 						</div>
 					</div>
 				</div>
@@ -61,8 +61,8 @@ $res = BBS::reply();
 					<div class="col-sm-12">
 						<div class="alert alert-success">
 							<h4><i class="icon fa fa-check"></i> Success!</h4>
-							<p>正常に登録しました。</p>
-							<p><a href="index.php">掲示板トップへ</a></p>
+							<p><?= BBS_POST_SUCCESS; ?></p>
+							<p><a href="index.php"><?= BBS_TO_TOP; ?></a></p>
 						</div>
 					</div>
 				</div>
@@ -77,7 +77,7 @@ $res = BBS::reply();
 
 							<div class="form-group<?php if (isset($res['errors']['username'])) : ?> has-error<?php endif; ?>">
 								<label class="control-label" for="username">
-									お名前
+									<?= BBS_POST_NAME; ?>
 								</label>
 								<input type="text" name="username" class="form-control" id="username" value="<?= h(filter_input(INPUT_POST, 'username')); ?>">
 								<?php if (isset($res['errors']['username'])) : ?>
@@ -87,7 +87,7 @@ $res = BBS::reply();
 
 							<div class="form-group<?php if (isset($res['errors']['comment'])) : ?> has-error<?php endif; ?>">
 								<label class="control-label" for="comment">
-									内容
+									<?= BBS_POST_CONTENT; ?>
 								</label>
 								<textarea name="comment" class="form-control" id="comment" rows="6"><?= h(filter_input(INPUT_POST, 'comment')); ?></textarea>
 								<?php if (isset($res['errors']['comment'])) : ?>
@@ -98,9 +98,9 @@ $res = BBS::reply();
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
-										<button class="btn btn-primary">投稿</button>
+										<button class="btn btn-primary"><?= BBS_POST; ?></button>
 										<input type="hidden" name="crsf_token" value="<?= h(CSRF::get()); ?>" />
-										<a href="index.php" class="btn btn-default">掲示板トップへ</a>
+										<a href="index.php" class="btn btn-default"><?= BBS_TO_TOP; ?></a>
 									</div>
 								</div>
 							</div>
@@ -111,7 +111,7 @@ $res = BBS::reply();
 				</div>
 			<?php endif; ?>
 		</div>
-		<script type="text/javascript" src="//code.jquery.com/jquery-3.0.0.min.js"></script>
-		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	</body>
 </html>

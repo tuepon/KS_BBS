@@ -20,17 +20,18 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 require 'autoload.php';
+require 'config.php';
 
 function h($string)
 {
 	return htmlspecialchars($string, ENT_QUOTES, 'utf-8');
 }
 
-function pagination($page, $total)
+function pagination($intPage, $total)
 {
 	$rowCount = 5;
 	if ($total < 1) {
-		//return;
+		return;
 	}
 	$query = (is_array(filter_input_array(INPUT_GET))) ?
 		filter_input_array(INPUT_GET) : array();
@@ -39,7 +40,9 @@ function pagination($page, $total)
 	}
 	$querystring = http_build_query($query);
 	$limit = $rowCount;
-	$placeholder = "<a href=\"?page=%d&%s\" class=\"btn btn-primary%s\">%s</a> ";
+	$placeholder = "<a href=\"?page=%d&%s\" class=\"btn%s\">%s</a> ";
+
+	$page = ($intPage == 0) ? 1 : $intPage;
 
 	// 最大ページ数
 	$maxPage = ceil($total / $limit);
@@ -49,25 +52,25 @@ function pagination($page, $total)
 	$html .= sprintf($placeholder
 		, 1
 		, $querystring
-		, ($page > 1) ? '' : ' disabled'
+		, ($page > 1) ? ' btn-primary' : ' btn-default disabled'
 		, '&laquo;'
 	);
 	$html .= sprintf($placeholder
 		, $page - 1
 		, $querystring
-		, ($page > 1) ? '' : ' disabled'
-		, '前へ'
+		, ($page > 1) ? ' btn-primary' : ' btn-default disabled'
+		, PREV
 	);
 	$html .= sprintf($placeholder
 		, $page + 1
 		, $querystring
-		, ($page < $maxPage) ? '' : ' disabled'
-		, '次へ'
+		, ($page < $maxPage) ? ' btn-primary' : ' btn-default disabled'
+		, NEXT
 	);
 	$html .= sprintf($placeholder
 		, $maxPage
 		, $querystring
-		, ($page < $maxPage) ? '' : ' disabled'
+		, ($page < $maxPage) ? ' btn-primary' : ' btn-default disabled'
 		, '&raquo;'
 	);
 

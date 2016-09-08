@@ -16,9 +16,9 @@ $res = BBS::newThread();
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8">
-		<title>新規スレッド投稿</title>
+		<title><?= BBS_NEW_THREAD; ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/common.min.css" />
 
 		<!--[if lt IE 9]>
@@ -40,7 +40,7 @@ $res = BBS::newThread();
 		<div class="container">
 
 			<div class="blog-header">
-				<h1 class="blog-title">新規スレッド投稿</h1>
+				<h1 class="blog-title"><?= BBS_NEW_THREAD; ?></h1>
 			</div>
 
 			<?php if (isset($res['errors']['csrf_token']) && !$res['errors']['csrf_token']) : ?>
@@ -49,7 +49,7 @@ $res = BBS::newThread();
 						<div class="alert alert-danger alert-dismissible">
 							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 							<h4><i class="icon fa fa-ban"></i> Alert!</h4>
-							二重投稿を検知したので、処理を中断しました。
+							<?= BBS_ERR_CSRF; ?>
 						</div>
 					</div>
 				</div>
@@ -61,8 +61,8 @@ $res = BBS::newThread();
 					<div class="col-sm-12">
 						<div class="alert alert-success">
 							<h4><i class="icon fa fa-check"></i> Success!</h4>
-							<p>正常に登録しました。</p>
-							<p><a href="index.php">掲示板トップへ</a></p>
+							<p><?= BBS_POST_SUCCESS; ?></p>
+							<p><a href="index.php"><?= BBS_TO_TOP; ?></a></p>
 						</div>
 					</div>
 				</div>
@@ -71,10 +71,10 @@ $res = BBS::newThread();
 				<div class="row">
 					<div class="col-sm-12">
 
-						<form action="" method="post">
+						<form action="" method="post" enctype="multipart/form-data">
 							<div class="form-group<?php if (isset($res['errors']['title'])) : ?> has-error<?php endif; ?>">
 								<label class="control-label" for="title">
-									タイトル
+									<?= BBS_POST_TITLE; ?>
 								</label>
 								<input type="text" name="title" class="form-control" id="title" value="<?= h(filter_input(INPUT_POST, 'title')); ?>">
 								<?php if (isset($res['errors']['title'])) : ?>
@@ -83,7 +83,7 @@ $res = BBS::newThread();
 							</div>
 							<div class="form-group<?php if (isset($res['errors']['username'])) : ?> has-error<?php endif; ?>">
 								<label class="control-label" for="username">
-									お名前
+									<?= BBS_POST_NAME; ?>
 								</label>
 								<input type="text" name="username" class="form-control" id="username" value="<?= h(filter_input(INPUT_POST, 'username')); ?>">
 								<?php if (isset($res['errors']['username'])) : ?>
@@ -92,18 +92,64 @@ $res = BBS::newThread();
 							</div>
 							<div class="form-group<?php if (isset($res['errors']['comment'])) : ?> has-error<?php endif; ?>">
 								<label class="control-label" for="comment">
-									内容
+									<?= BBS_POST_CONTENT; ?>
 								</label>
-								<textarea name="comment" class="form-control" id="comment" rows="6"><?= h(filter_input(INPUT_POST, 'comment')); ?></textarea>
+								<textarea name="comment" class="form-control" id="comment" rows="5"><?= h(filter_input(INPUT_POST, 'comment')); ?></textarea>
 								<?php if (isset($res['errors']['comment'])) : ?>
 									<span class="help-block"><?= h($res['errors']['comment']); ?></span>
 								<?php endif; ?>
 							</div>
 
-							<div class="form-group">
-								<button class="btn btn-primary">投稿</button>
-								<a href="index.php" class="btn btn-default">掲示板トップへ</a>
-								<input type="hidden" name="crsf_token" value="<?= h(CSRF::get()); ?>" />
+							<?php if (BBS_FUNC_IMAGE) : ?>
+
+								<div class="form-group">
+									<label class="control-label" for="images">
+										<?= BBS_POST_IMAGE; ?>
+									</label>
+
+									<div class="row">
+										<div class="col-sm-6"><input type="file" name="images[]" id="images"></div>
+										<?php if (isset($res['errors']['images'][0])) : ?>
+											<div class="col-sm-6 has-error"><span class="help-block"><?= h($res['errors']['images'][0]); ?></span></div>
+										<?php endif; ?>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-6"><input type="file" name="images[]"></div>
+										<?php if (isset($res['errors']['images'][1])) : ?>
+											<div class="col-sm-6 has-error"><span class="help-block"><?= h($res['errors']['images'][1]); ?></span></div>
+										<?php endif; ?>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-6"><input type="file" name="images[]"></div>
+										<?php if (isset($res['errors']['images'][2])) : ?>
+											<div class="col-sm-6 has-error"><span class="help-block"><?= h($res['errors']['images'][2]); ?></span></div>
+										<?php endif; ?>
+									</div>
+								</div>
+
+							<?php endif; ?>
+
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<button class="btn btn-primary"><?= BBS_POST; ?></button>
+										<a href="index.php" class="btn btn-default"><?= BBS_TO_TOP; ?></a>
+										<input type="hidden" name="crsf_token" value="<?= h(CSRF::get()); ?>" />
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group<?php if (isset($res['errors']['delete_key'])) : ?> has-error<?php endif; ?>">
+										<div class="input-group">
+											<span class="input-group-addon"><?= BBS_POST_DELKEY; ?></span>
+											<input type="text" name="delete_key" class="form-control" id="delete_key" value="<?= h(filter_input(INPUT_POST, 'delete_key')); ?>">
+										</div>
+										<?php if (isset($res['errors']['delete_key'])) : ?>
+											<span class="help-block"><?= h($res['errors']['delete_key']); ?></span>
+										<?php endif; ?>
+									</div>
+								</div>
 							</div>
 
 						</form>
@@ -113,7 +159,7 @@ $res = BBS::newThread();
 
 			<?php endif; ?>
 		</div>
-		<script type="text/javascript" src="//code.jquery.com/jquery-3.0.0.min.js"></script>
-		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	</body>
 </html>

@@ -36,10 +36,7 @@ class BBS
 	 */
 	public static function get($order = 'new', $id = null)
 	{
-		DB::createTable();
-
 		$q = filter_input(INPUT_GET, 'q');
-
 		$arr = [];
 
 		$sql = "SELECT ";

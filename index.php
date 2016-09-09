@@ -126,7 +126,7 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 
 						<div class="row pagination_nav">
 							<div class="col-xs-12">
-								<?php echo pagination(filter_input(INPUT_GET, 'page'), $res['count']); ?>
+								<?php echo pagination($res['count']); ?>
 							</div>
 
 						</div>

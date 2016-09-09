@@ -22,6 +22,11 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 require 'autoload.php';
 require 'config.php';
 
+// DBが存在しない時に作成する
+if (!file_exists(DB::DBNAME)) {
+	DB::createTable();
+}
+
 /**
  * Escape against XSS
  * @param string $string
@@ -38,12 +43,13 @@ function h($string)
  * @param int $total
  * @return string
  */
-function pagination($intPage, $total)
+function pagination($total)
 {
 	$rowCount = 5;
 	if ($total < 1) {
 		return;
 	}
+	$intPage = filter_input(INPUT_GET, 'page');
 	$query = (is_array(filter_input_array(INPUT_GET))) ?
 		filter_input_array(INPUT_GET) : array();
 	if (isset($query['page'])) {

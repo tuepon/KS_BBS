@@ -11,11 +11,13 @@ namespace KSBBS;
 class DB
 {
 
+	const DBNAME = 'bbsdata/ksbbs.sqlite3';
+
 	/**
 	 * DSN
 	 * @var string
 	 */
-	private static $dsn = 'sqlite:bbsdata/ksbbs.sqlite3';
+	private static $dsn = 'sqlite:%s';
 
 	/**
 	 * instance
@@ -30,7 +32,7 @@ class DB
 	public static function getInstance()
 	{
 		if (is_null(self::$instance)) {
-			self::$instance = new \PDO(self::$dsn);
+			self::$instance = new \PDO(sprintf(self::$dsn, self::DBNAME));
 			self::$instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			self::$instance->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
 		}

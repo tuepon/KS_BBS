@@ -33,7 +33,7 @@ class IMAGE
 			, $width, $height, $width_orig, $height_orig
 		);
 
-		$destination = 'images/thumb/' . basename($filename);
+		$destination = 'upfiles/thumb/' . basename($filename);
 
 		switch ($type) {
 			case IMAGETYPE_PNG:

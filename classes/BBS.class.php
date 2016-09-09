@@ -238,7 +238,7 @@ class BBS
 							$extension = 'jpg';
 							break;
 					}
-					$new_filename = sprintf('images/%s.%s', sha1_file($tmp_name), $extension);
+					$new_filename = sprintf('upfiles/%s.%s', sha1_file($tmp_name), $extension);
 					if (rename($tmp_name, $new_filename) &&
 						IMAGE::resize($new_filename, 200)) {
 						$arrImages[] = basename($new_filename);

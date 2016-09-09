@@ -6,9 +6,15 @@
  * @author Kosuke Shibuya <kosuke@jlamp.net>
  * @since 2016/09/08
  */
+/**
+ * 機能設定
+ */
 // 画像のアッップロード機能を有効にする true|false
 define('BBS_FUNC_IMAGE', true);
 
+/**
+ * 表示設定
+ */
 // 掲示板のタイトル
 define('BBS_TITLE', '掲示板サンプル');
 

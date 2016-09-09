@@ -18,7 +18,7 @@ $res = BBS::reply();
 		<meta charset="UTF-8">
 		<title><?= BBS_REPLY; ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/common.min.css" />
 
 		<!--[if lt IE 9]>
@@ -71,7 +71,7 @@ $res = BBS::reply();
 
 				<div class="row">
 
-					<div class="col-sm-12 blog-main">
+					<div class="col-sm-12">
 
 						<form action="" method="post" enctype="multipart/form-data">
 
@@ -153,7 +153,7 @@ $res = BBS::reply();
 				</div>
 			<?php endif; ?>
 		</div>
-		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="//code.jquery.com/jquery-3.1.0.min.js"></script>
+		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	</body>
 </html>

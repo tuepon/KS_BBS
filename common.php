@@ -22,11 +22,22 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 require 'autoload.php';
 require 'config.php';
 
+/**
+ * Escape against XSS
+ * @param string $string
+ * @return string
+ */
 function h($string)
 {
 	return htmlspecialchars($string, ENT_QUOTES, 'utf-8');
 }
 
+/**
+ * pagination
+ * @param int $intPage
+ * @param int $total
+ * @return string
+ */
 function pagination($intPage, $total)
 {
 	$rowCount = 5;

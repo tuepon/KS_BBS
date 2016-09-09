@@ -19,7 +19,7 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 		<meta charset="UTF-8">
 		<title><?= BBS_TITLE; ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/common.min.css" />
 
 		<!--[if lt IE 9]>
@@ -76,7 +76,9 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 									<div class="images row">
 										<?php foreach (BBS::getImages($r['id']) as $img) : ?>
 											<div class="col-xs-4">
-												<img src="<?= h($img['filename']); ?>" width="100%" />
+												<a href="<?= h('images/' . $img['filename']); ?>">
+													<img src="<?= h('images/thumb/' . $img['filename']); ?>" width="100%" />
+												</a>
 											</div>
 										<?php endforeach; ?>
 									</div>
@@ -104,7 +106,9 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 												<div class="images row">
 													<?php foreach (BBS::getImages($reply['id']) as $img) : ?>
 														<div class="col-xs-4">
-															<img src="<?= h($img['filename']); ?>" width="100%" />
+															<a href="<?= h('images/' . $img['filename']); ?>">
+																<img src="<?= h('images/thumb/' . $img['filename']); ?>" width="100%" />
+															</a>
 														</div>
 													<?php endforeach; ?>
 												</div>
@@ -166,7 +170,7 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="//code.jquery.com/jquery-3.1.0.min.js"></script>
+		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	</body>
 </html>

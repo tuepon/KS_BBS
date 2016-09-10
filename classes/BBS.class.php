@@ -324,4 +324,14 @@ class BBS
 		return true;
 	}
 
+	public static function delete($id, $delkey)
+	{
+		$sql = "UPDATE ksbbs ";
+		$sql .= "SET ";
+		$sql .= "delete_flag = 1 ";
+		$sql .= "WHERE id = :id ";
+		$sql .= "AND delete_key = :delkey ";
+		return DB::update($sql, [':id' => $id, ':delkey' => $delkey]);
+	}
+
 }

@@ -87,6 +87,7 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 									<div class="comment-footer">
 										<a href="reply.php?id=<?= h($r['id']) ?>">[ <?= BBS_REPLYING; ?> ]</a>
 										<span><?= BBS_REPLY_COUNT; ?>: <?= h($r['comment_count']) ?></span>
+										<a class="pull-right delete" data-id="<?= h($r['id']) ?>" data-toggle="modal" data-target="#myModal" href="javascript:void(0);"><?= BBS_DELETE; ?></a>
 									</div>
 
 									<?php if (isset($r['reply']['count']) && $r['reply']['count'] > 0) : ?>
@@ -171,8 +172,55 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 				</div>
 			</div>
 		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="myModalLabel"><?= BBS_DELETE ?></h4>
+					</div>
+					<div class="modal-body">
+						<p><?= BBS_DLG_MESSAGE; ?></p>
+						<form>
+							<div class="form-group">
+								<label for="delete-name" class="control-label"><?= BBS_POST_DELKEY; ?>:</label>
+								<input type="text" class="form-control" id="delete-name">
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"><?= BBS_DLG_CLOSE ?></button>
+						<button id="action" type="button" class="btn btn-primary"><?= BBS_DELETE ?></button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<script type="text/javascript" src="//code.jquery.com/jquery-3.1.0.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<script src="js/lightbox.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			$('#myModal').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				var modal = $(this);
+				$("#action").on('click', function () {
+					var id = button.data('id');
+					var delkey = modal.find('.modal-body input').val();
+					if ("" === delkey) {
+						return;
+					}
+					$.getJSON('ajax-delete.php'
+							, {
+								id: id
+								, delkey: delkey
+							}, function (json) {
+						if (json.response) {
+							window.location.reload();
+						}
+					});
+				});
+			});
+		</script>
 	</body>
 </html>

@@ -16,7 +16,7 @@ define('BBS_FUNC_IMAGE', true);
  * 表示設定
  */
 // 掲示板のタイトル
-define('BBS_TITLE', '掲示板サンプル');
+define('BBS_TITLE', '掲示板（画像投稿付き）サンプル');
 
 // 掲示板の説明
 define('BBS_DESCRIPTION', 'ここに掲示板の説明を記述します。');
@@ -29,6 +29,12 @@ define('BBS_REPLY', '返信投稿');
 
 // 返信投稿
 define('BBS_REPLYING', '返信する');
+
+// 返信投稿
+define('BBS_DELETE', '投稿削除');
+
+// dialog
+define('BBS_DLG_CLOSE', '閉じる');
 
 // 返信数
 define('BBS_REPLY_COUNT', '返信数');
@@ -68,6 +74,8 @@ define('BBS_POST_CONTENT', '内容（1,000文字以下）');
 
 // フォームラベル - 削除キー
 define('BBS_POST_DELKEY', '削除キー');
+
+define('BBS_DLG_MESSAGE', '投稿時に設定した削除キーを入力してください。');
 
 // フォームラベル - 画像
 define('BBS_POST_IMAGE', '画像');

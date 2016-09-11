@@ -11,8 +11,19 @@ namespace KSBBS;
 
 require 'common.php';
 
-$id = filter_input(INPUT_GET, 'id');
-$delkey = filter_input(INPUT_GET, 'delkey');
+$request_method = filter_input(INPUT_SERVER, 'REQUEST_METHOD');
+
+switch ($request_method) {
+	case 'POST':
+		$method = INPUT_POST;
+		break;
+	case 'GET':
+		$method = INPUT_GET;
+		break;
+}
+
+$id = filter_input($method, 'id');
+$delkey = filter_input($method, 'delkey');
 
 header('Content-type: application/json');
 

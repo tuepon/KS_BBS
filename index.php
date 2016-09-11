@@ -204,19 +204,25 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 			$('#myModal').on('show.bs.modal', function (event) {
 				var button = $(event.relatedTarget);
 				var modal = $(this);
+				var url = 'ajax-delete.php';
+
 				$("#action").on('click', function () {
 					var id = button.data('id');
 					var delkey = modal.find('.modal-body input').val();
 					if ("" === delkey) {
 						return;
 					}
-					$.getJSON('ajax-delete.php'
-							, {
-								id: id
-								, delkey: delkey
-							}, function (json) {
-						if (json.response) {
-							window.location.reload();
+					var params = {
+						id: id
+						, delkey: delkey
+					};
+
+					$.post({
+						'url': url
+						, 'data': params
+						, 'dataType': 'json'
+						, success: function () {
+
 						}
 					});
 				});

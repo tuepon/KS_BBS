@@ -12,7 +12,10 @@ namespace KSBBS;
 date_default_timezone_set('Asia/Tokyo');
 
 if (version_compare(phpversion(), '5.4.0', '<')) {
-	die('PHP Version is too OLD!');
+	die(sprintf('PHP Version %s is too OLD! You should use 5.4 above.'
+			, phpversion()
+		)
+	);
 }
 
 if (session_status() !== PHP_SESSION_ACTIVE) {

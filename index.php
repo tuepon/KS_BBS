@@ -12,6 +12,8 @@ require 'common.php';
 
 // スレッドを取得
 $res = BBS::get(filter_input(INPUT_GET, 'order'));
+
+$comments = BBS::recentComment();
 ?>
 <!DOCTYPE HTML>
 <html lang="ja">
@@ -159,9 +161,17 @@ $res = BBS::get(filter_input(INPUT_GET, 'order'));
 								</form>
 							</div>
 
-							<div class="widget">
-								widget2
-							</div>
+							<?php if (0 < $comments['count']) : ?>
+								<div class="widget">
+									<h4>最近のコメント</h4>
+									<?php foreach ($comments['rows'] as $comment) : ?>
+										<p>
+											<?= h($comment['title']); ?>
+											<span>by <?= h($comment['username']); ?></span>
+										</p>
+									<?php endforeach; ?>
+								</div>
+							<?php endif; ?>
 
 							<div class="widget">
 								widget3

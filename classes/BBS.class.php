@@ -90,6 +90,27 @@ class BBS
 		return $res;
 	}
 
+	public static function recentComment()
+	{
+		$sql = "SELECT ";
+		$sql .= "m.id";
+		$sql .= ", m.parent_id";
+		$sql .= ", m.username";
+		$sql .= ", ('Re:' || c.title) as title";
+		$sql .= ", m.comment";
+		$sql .= ", m.create_at";
+		$sql .= ", m.update_at";
+		$sql .= ", m.delete_flag";
+		$sql .= " FROM ksbbs m ";
+		$sql .= "LEFT JOIN ksbbs c ON c.id = m.parent_id ";
+		$sql .= "WHERE m.parent_id > 0 ";
+		$sql .= "AND m.delete_flag = 0 ";
+		$sql .= "ORDER BY m.update_at DESC ";
+		$sql .= "LIMIT 10 ";
+		$res = DB::select($sql, []);
+		return $res;
+	}
+
 	public static function getImages($postId)
 	{
 		$sql_img = "SELECT * FROM ksimg ";
